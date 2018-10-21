@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">DubeSamuel_Exercise2</string>
+    <string name="validation_minimum">Minimum</string>
+    <string name="validation_maximum">Maximum</string>
+    <string name="validation_betweeen">Entre</string>
+    <string name="validation_minimumMaj">Minimum Majuscule</string>
+    <string name="validation_minimumDig">Minimum Chiffre</string>
+    <string name="validation_empty">Est Vide</string>
+    <string name="input_Mnimum">Minimum</string>
+    <string name="input_Maximum">Maximum</string>
+</resources>
