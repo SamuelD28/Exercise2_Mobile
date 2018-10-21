@@ -8,4 +8,5 @@
     <string name="validation_empty">Est Vide</string>
     <string name="input_Mnimum">Minimum</string>
     <string name="input_Maximum">Maximum</string>
+    <string name="console">Console</string>
 </resources>

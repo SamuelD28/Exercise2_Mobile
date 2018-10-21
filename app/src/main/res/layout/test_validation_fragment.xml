@@ -21,6 +21,8 @@
             android:id="@+id/textValidation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:labelFor="@id/inputValidation"
+            android:text="@string/console"
             android:textAlignment="center"
             android:textSize="18sp" />
 
@@ -29,11 +31,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            tools:ignore="Autofill" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:baselineAligned="true"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -43,20 +47,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/labelInputMinimum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Minimum" />
+                    android:labelFor="@id/inputMinimum"
+                    android:text="@string/input_Mnimum" />
 
                 <EditText
                     android:id="@+id/inputMinimum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:contentDescription="Minimum"
                     android:ems="10"
                     android:inputType="number"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <LinearLayout
@@ -66,18 +70,19 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/labelInputMaximum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Maximum" />
+                    android:labelFor="@id/inputMaximum"
+                    android:text="@string/input_Maximum" />
 
                 <EditText
                     android:id="@+id/inputMaximum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
         </LinearLayout>
@@ -88,6 +93,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
             android:elevation="0dp"
+            android:tag="Minimum"
             android:text="@string/validation_minimum"
             android:textColor="@android:color/background_light" />
 
@@ -96,6 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
+            android:tag="Maximum"
             android:text="@string/validation_maximum"
             android:textColor="@android:color/background_light" />
 
@@ -104,6 +111,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
+            android:tag="Entre"
             android:text="@string/validation_betweeen"
             android:textColor="@android:color/background_light" />
 
@@ -112,6 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
+            android:tag="MinimumMajuscule"
             android:text="@string/validation_minimumMaj"
             android:textColor="@android:color/background_light" />
 
@@ -120,6 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
+            android:tag="MinimumChiffre"
             android:text="@string/validation_minimumDig"
             android:textColor="@android:color/background_light" />
 
@@ -128,6 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimaryDark"
+            android:tag="EstVide"
             android:text="@string/validation_empty"
             android:textColor="@android:color/background_light" />
     </LinearLayout>

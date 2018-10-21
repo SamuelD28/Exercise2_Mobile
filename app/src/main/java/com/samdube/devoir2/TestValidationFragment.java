@@ -2,6 +2,7 @@ package com.samdube.devoir2;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +11,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import static com.samdube.devoir2.UtilsCommand.*;
-import static com.samdube.devoir2.UtilsCommand.VerificationCommand.Entre;
-import static com.samdube.devoir2.UtilsCommand.VerificationCommand.EstVide;
-import static com.samdube.devoir2.UtilsCommand.VerificationCommand.Maximum;
-import static com.samdube.devoir2.UtilsCommand.VerificationCommand.Minimum;
-import static com.samdube.devoir2.UtilsCommand.VerificationCommand.MinimumChiffre;
-import static com.samdube.devoir2.UtilsCommand.VerificationCommand.MinimumMajuscule;
+import java.util.ArrayList;
 
+import static com.samdube.devoir2.UtilsCommand.Entre;
+import static com.samdube.devoir2.UtilsCommand.EstVide;
+import static com.samdube.devoir2.UtilsCommand.Maximum;
+import static com.samdube.devoir2.UtilsCommand.Minimum;
+import static com.samdube.devoir2.UtilsCommand.MinimumMajuscule;
+import static com.samdube.devoir2.UtilsCommand.MiniumChiffre;
+import static com.samdube.devoir2.UtilsCommand.VerificationCommand;
+
+//We implement the OnClickListener in the class to simplify the code. No need to create innerclass for each button listener
 public class TestValidationFragment extends Fragment implements View.OnClickListener {
 
     private EditText InputValidation;
@@ -26,91 +30,98 @@ public class TestValidationFragment extends Fragment implements View.OnClickList
     private TextView ConsoleValidation;
 
     @Override
-    public View onCreateView(LayoutInflater inflater,ViewGroup container, Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.test_validation_fragment, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        InputValidation     = view.findViewById(R.id.inputValidation);
-        InputMinimum        = view.findViewById(R.id.inputMinimum);
-        InputMaximum        = view.findViewById(R.id.inputMaximum);
-        ConsoleValidation   = view.findViewById(R.id.textValidation);
+        View view = inflater.inflate(R.layout.test_validation_fragment, container, false);
 
-        Button btnMinimum = view.findViewById(R.id.btnMinimum);
-        Button btnMaximum = view.findViewById(R.id.btnMaximum);
-        Button btnEntre = view.findViewById(R.id.btnEntre);
-        Button btnMinimumMaj = view.findViewById(R.id.btnMinMaj);
-        Button btnMinimumChiffre = view.findViewById(R.id.btnMinDigit);
-        Button btnEstVide = view.findViewById(R.id.btnVide);
+        //Input Elements
+        //Use to store all the button. Creates a lighter code in the onCreate method
+        ArrayList<Button> listeBtnCommand = new ArrayList<>();
+        InputValidation = view.findViewById(R.id.inputValidation);
+        InputMinimum = view.findViewById(R.id.inputMinimum);
+        InputMaximum = view.findViewById(R.id.inputMaximum);
+        ConsoleValidation = view.findViewById(R.id.textValidation);
 
-        btnMinimum.setOnClickListener(this);
-        btnMaximum.setOnClickListener(this);
-        btnEntre.setOnClickListener(this);
-        btnMinimumMaj.setOnClickListener(this);
-        btnMinimumChiffre.setOnClickListener(this);
-        btnEstVide.setOnClickListener(this);
+        //Command Button
+        listeBtnCommand.add(view.findViewById(R.id.btnMinimum));
+        listeBtnCommand.add(view.findViewById(R.id.btnMaximum));
+        listeBtnCommand.add(view.findViewById(R.id.btnEntre));
+        listeBtnCommand.add(view.findViewById(R.id.btnMinMaj));
+        listeBtnCommand.add(view.findViewById(R.id.btnMinDigit));
+        listeBtnCommand.add(view.findViewById(R.id.btnVide));
+
+        //Set the onClickListener for all the btn
+        for (Button btn : listeBtnCommand)
+            btn.setOnClickListener(this);
 
         return view;
     }
 
+    //Method that execute the command linked with the button.
+    //It uses the tag attribute on the button to determine which command to perform.
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btnMinimum:
-                Verification(Minimum);
-                break;
-            case R.id.btnMaximum:
-                Verification(Maximum);
-                break;
-            case R.id.btnEntre:
-                Verification(Entre);
-                break;
-            case R.id.btnMinMaj:
-                Verification(MinimumMajuscule);
-                break;
-            case R.id.btnMinDigit:
-                Verification(MinimumChiffre);
-            break;
-            case R.id.btnVide:
-                Verification(EstVide);
-                break;
+        Button btn = (Button) v;
+        try {
+            //Throws an error if the command doesnt exist
+            VerificationCommand command = VerificationCommand.valueOf(btn.getTag().toString().toLowerCase());
+            EffectuerVerification(command);
+        } catch (Exception e) {
+            AfficherMessageConsole("Assurez-vous d'assigner une commande au bouton", false);
         }
     }
 
-    public void Verification(VerificationCommand command)
-    {
+    //Method that perform the required verification on the input string
+    private void EffectuerVerification(VerificationCommand command) {
+        //Initialize the maximum and minimum in case we dont use the inputs
+        Integer minimum = (!InputMinimum.getText().toString().isEmpty()) ? Integer.valueOf(InputMinimum.getText().toString()) : 5;
+        Integer maximum = (!InputMaximum.getText().toString().isEmpty()) ? Integer.valueOf(InputMaximum.getText().toString()) : 10;
         String input = InputValidation.getText().toString();
-        Integer minimum = (!InputMinimum.getText().toString().isEmpty())? Integer.valueOf(InputMinimum.getText().toString()): 5;
-        Integer maximum = (!InputMaximum.getText().toString().isEmpty())? Integer.valueOf(InputMaximum.getText().toString()): 10;
-        Boolean DidVerificationPassed = false;
+        //Keeps informations about the verification results
+        Boolean DidVerificationPassed;
+        String message = String.valueOf(command);
+        try {
+            switch (command) {
+                case minimum:
+                    DidVerificationPassed = Minimum(input, minimum);
+                    message = message.concat(" {" + minimum + "}");
+                    break;
+                case maximum:
+                    DidVerificationPassed = Maximum(input, maximum);
+                    message = message.concat(" {" + maximum + "}");
+                    break;
+                case entre:
+                    DidVerificationPassed = Entre(input, minimum, maximum);
+                    message = message.concat(" {" + minimum + "-" + maximum + "}");
+                    break;
+                case minimumchiffre:
+                    DidVerificationPassed = MiniumChiffre(input, minimum);
+                    message = message.concat(" {" + minimum + "}");
+                    break;
+                case minimummajuscule:
+                    DidVerificationPassed = MinimumMajuscule(input, minimum);
+                    message = message.concat(" {" + minimum + "}");
+                    break;
+                case estvide:
+                    DidVerificationPassed = EstVide(input);
+                    break;
+                default:
+                    throw new IllegalArgumentException("La commande n'est pas disponible");
+            }
+            AfficherMessageConsole(message, DidVerificationPassed);
+        } catch (Exception e) {
+            AfficherMessageConsole(e.getMessage(), false);
+        }
+    }
 
-        switch (command)
-        {
-            case Minimum:
-                DidVerificationPassed = Minimum(input, minimum);
-                break;
-            case Maximum:
-                DidVerificationPassed = Maximum(input, maximum);
-                break;
-            case Entre:
-                DidVerificationPassed = Entre(input, minimum, maximum);
-                break;
-            case MinimumChiffre:
-                DidVerificationPassed = MiniumChiffre(input, minimum);
-                break;
-            case MinimumMajuscule:
-                DidVerificationPassed = MinimumMajuscule(input, minimum);
-                break;
-            case EstVide:
-                DidVerificationPassed = EstVide(input);
-                break;
-        }
-        if(DidVerificationPassed)
-        {
+    //Method that display a message inside the textview over the input validation
+    private void AfficherMessageConsole(String message, Boolean success) {
+        if (success) {
             ConsoleValidation.setTextColor(Color.BLUE);
-            ConsoleValidation.setText("Vérification " + command + " réussi.");
-        }
-        else{
+            ConsoleValidation.setText(message);
+        } else {
             ConsoleValidation.setTextColor(Color.RED);
-            ConsoleValidation.setText("Vérification " + command + " échoué.");
+            ConsoleValidation.setText(message);
         }
     }
 }
